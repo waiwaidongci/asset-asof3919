@@ -15,6 +15,7 @@ function runRequest(data, spec) {
 
 export async function runPage(route, refresh) {
   const {spec,datasets,runs} = workspace;
+  const ready = datasets.filter(item => item.status === 'ready');
   const scheduling = spec.scheduled && route.scheduling;
   const plans = scheduling ? await workspace.schedules() : [];
   const error = feedback();
@@ -30,7 +31,7 @@ export async function runPage(route, refresh) {
     onSubmit:handler(submit,error,async event=>{
       const item = await workspace.start(runRequest(new FormData(event.target),spec));
       location.hash = `#results/${item.id}`;
-    })}, datasetField(datasets,route.id),field({key:'name',label:'运行名称',type:'string',max_length:120},`样本${spec.run}`),
+    })}, datasetField(ready,route.id),field({key:'name',label:'运行名称',type:'string',max_length:120},`样本${spec.run}`),
     el('div',{class:'form-grid'},spec.params.map(param=>field(param))),el('div',{class:'actions'},submit),scheduleFields,error);
   plan.addEventListener('click',handler(plan,error,async()=>{
     if (!form.reportValidity()) return;
@@ -58,7 +59,7 @@ export async function runPage(route, refresh) {
     }},
   ],plans,{caption:'定时计划',empty:'还未配置定时计划。'}));
   return el('div',{class:'two-col'}, el('div',{class:'wide-panel'},
-    panel(spec.run,session.canWrite ? (datasets.length ? form : empty('请先导入数据。','#inputs','前往导入'))
+    panel(spec.run,session.canWrite ? (ready.length ? form : empty('请先导入数据并等待入库完成。','#inputs','前往导入'))
       : p('只读角色可以查看上方业务流程的历史运行。','empty')),
     !scheduling && panel('运行记录',runList),scheduleList),
     el('aside',{class:'sidebar-panel'},panel('计算口径',el('ul',{class:'method-list'},spec.methodology.map(text=>el('li',{},text))))));

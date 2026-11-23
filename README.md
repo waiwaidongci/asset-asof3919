@@ -13,7 +13,7 @@
 | 模块 | 用途 |
 |---|---|
 | 值班总览 | 查阅业务口径、当班流程及最新运行。主管可以核对审计记录。 |
-| 交接事件 | 下载「桂桥工具流转_20261121.csv」并核对字段。分析员可导入 UTF-8 CSV，保留数据指纹和原始行。 |
+| 交接事件 | 下载「桂桥工具流转_20261121.csv」并核对字段。分析员可导入 UTF-8 CSV，保留数据指纹和原始行；往年大簿按每批两千笔分片入库，可续传并查看盘点批次。 |
 | 期末盘点 | 选择批次和参数并提交后台计算，可从运行列表追踪状态。 |
 | 快照与月度勾稽 | 查看业务指标、证据表和解释，通过来源链接回查数据。 |
 | 台账复核 | 查看待处理或已完成记录。复核主管可提交台账复核及依据。 |
@@ -53,6 +53,14 @@ docker compose exec -T backend python -m scripts.seed_demo
 - 期初取首日之前的状态。逐月展示自然月末盘点，截止日早于当月末时另列该日日终快照；整段期末取最后一张快照。
 - 有效期末＝有效期初＋接收−退役，在管期末＝在管期初＋接收＋归还−借出−退役。事件流量可以按月累计，快照存量与比率按截止日期取值。
 
+## 大簿补盘
+
+- 百万行交接簿分批处理：入库分片与后台回放每批最多 2000 笔，单件工具的记录超过这个数也按批算完。
+- 原簿可以乱序上传。收尾时在库内编排全簿回放序号，重抄的同号同内容只算一次，同号异件会指出原簿行号。
+- 入库或盘点中断后从原进度续跑：分片按指纹去重，回放按断点续批，重试不重复计数。
+- 各月在管数和期末工具状态与整簿按日期和同日顺序回放一致，由同一回放引擎保证（`backend/src/domain/replay.py`）。
+- 批次入库完成、盘点计算完成前不供查阅；交接事件页可导入大簿并查看各盘点批次。
+
 ## 本地开发
 
 | 组件 | 实现 |
@@ -63,5 +71,14 @@ docker compose exec -T backend python -m scripts.seed_demo
 | 数据 | PostgreSQL 16 存储批次、运行与审计。`backend/scripts/seed_demo.py` 可安全重复执行。 |
 
 改动前端后执行 `docker compose up -d --build frontend`。改动接口或算法后执行 `docker compose up -d --build backend worker`，再刷新浏览器。如需保留数据，停止时执行 `docker compose down`。使用 `docker compose down -v --remove-orphans` 会清除该项目的数据库、Redis 和报表卷。
+
+回放引擎与入库逻辑有不依赖外部服务的回归测试，在 `backend` 目录下执行：
+
+```bash
+python3 -I tests/test_replay.py          # 回放引擎与金样比对、断点续跑
+python3 -I tests/test_ingest_sql.py      # 收尾 SQL 与后台分批回放模拟（SQLite）
+python3 -I tests/test_ingest_service.py  # 分片入库、重试去重、收尾校验
+node tests/test_csv.js                   # 前端流式 CSV 解析（在 frontend 目录）
+```
 
 `.env.example` 中的 `COMPOSE_PROJECT_NAME`、`FRONTEND_PORT`、`BACKEND_PORT`、`DB_PORT`、`APP_SUBNET` 控制项目隔离。`DB_PASSWORD`、`JWT_SECRET` 和 `SEED_DEMO` 为本机演示默认设置。后端 `constants/enums.py` 与前端 `src/constants/enums.js` 保持角色、运行状态和复核状态一致。项目许可证见 `LICENSE`。

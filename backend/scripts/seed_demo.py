@@ -6,7 +6,7 @@ from src.domain.demo import demo_rows
 from src.domain.spec import SPEC
 from src.models.identity import User
 from src.models.source import Dataset
-from src.services.datasets import save
+from src.services.ingest import ingest_rows
 from src.utils.security import hash_password
 
 
@@ -15,7 +15,7 @@ def seed():
         for role in Role:
             if not db.get(User, role.value):
                 db.add(User(username=role.value, role=role, password_hash=hash_password(f'{role.value}-demo-2611')))
-        item, created = save(db, SPEC['default_dataset'], SPEC['sample_name'], demo_rows(), 'seed')
+        item, created = ingest_rows(db, SPEC['default_dataset'], SPEC['sample_name'], demo_rows(), 'seed')
         return {'users': db.scalar(select(func.count()).select_from(User)),
                 'datasets': db.scalar(select(func.count()).select_from(Dataset)),
                 'seed_dataset_id': item.id, 'row_count': item.row_count, 'checksum': item.checksum,

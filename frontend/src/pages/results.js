@@ -6,7 +6,7 @@ import {REVIEW, STATUS} from '../constants/enums.js';
 import {handler, poll} from '../hooks/action.js';
 import {workspace} from '../stores/workspace.js';
 import {button, el, h, link, p} from '../utils/dom.js';
-import {date, value} from '../utils/format.js';
+import {date, number, value} from '../utils/format.js';
 
 export async function results(route, refresh) {
   const {spec,runs,datasets} = workspace;
@@ -18,7 +18,8 @@ export async function results(route, refresh) {
   const finished = item => item.status === 'complete' || item.status === 'failed';
   if (!finished(job)) {
     const original = location.hash;
-    const status = el('p',{role:'status'},'后台正在计算，完成后会自动展示。');
+    const status = el('p',{role:'status'},
+      job.progress ? `已分批回放 ${number.format(job.progress.processed)} 笔，完成后会自动展示。` : '后台正在计算，完成后会自动展示。');
     poll(()=>workspace.getRun(id),finished,()=>location.hash===original)
       .then(result=>{if (result && status.isConnected && location.hash===original) refresh();
         else if(status.isConnected) status.textContent='仍在执行，请点击刷新检查。';})

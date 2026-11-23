@@ -16,7 +16,7 @@ def main():
             lease = claim()
             heartbeat.touch()
             if lease:
-                execute(lease)
+                execute(lease, heartbeat.touch)
                 heartbeat.touch()
             else:
                 wait()

@@ -1,0 +1,83 @@
+[
+  {
+    "name": "demo-period",
+    "rows": 17,
+    "params": {
+      "start_date": "2026-09-01",
+      "as_of_date": "2026-11-20"
+    },
+    "headline": "截至 2026-11-20，有效工具 4 件，在管 2 件，借出 2 件。"
+  },
+  {
+    "name": "demo-next-day",
+    "rows": 17,
+    "params": {
+      "start_date": "2026-09-01",
+      "as_of_date": "2026-11-21"
+    },
+    "headline": "截至 2026-11-21，有效工具 5 件，在管 4 件，借出 1 件。"
+  },
+  {
+    "name": "demo-fixture",
+    "rows": 17,
+    "params": {
+      "start_date": "2026-09-01",
+      "as_of_date": "2026-10-31"
+    },
+    "headline": "截至 2026-10-31，有效工具 3 件，在管 2 件，借出 1 件。"
+  },
+  {
+    "name": "demo-mid-month",
+    "rows": 17,
+    "params": {
+      "start_date": "2026-09-15",
+      "as_of_date": "2026-10-20"
+    },
+    "headline": "截至 2026-10-20，有效工具 4 件，在管 4 件，借出 0 件。"
+  },
+  {
+    "name": "demo-single-day",
+    "rows": 17,
+    "params": {
+      "start_date": "2026-10-31",
+      "as_of_date": "2026-10-31"
+    },
+    "headline": "截至 2026-10-31，有效工具 3 件，在管 2 件，借出 1 件。"
+  },
+  {
+    "name": "demo-before-all",
+    "rows": 17,
+    "params": {
+      "start_date": "2027-01-01",
+      "as_of_date": "2027-02-15"
+    },
+    "headline": "截至 2027-02-15，有效工具 5 件，在管 4 件，借出 1 件。"
+  },
+  {
+    "name": "many-tools",
+    "rows": 5027,
+    "params": {
+      "start_date": "2026-09-01",
+      "as_of_date": "2026-11-20"
+    },
+    "headline": "截至 2026-11-20，有效工具 26 件，在管 0 件，借出 26 件。"
+  },
+  {
+    "name": "one-tool-over-batch",
+    "rows": 4852,
+    "params": {
+      "start_date": "2026-09-01",
+      "as_of_date": "2026-11-20"
+    },
+    "headline": "截至 2026-11-20，有效工具 1 件，在管 1 件，借出 0 件。"
+  },
+  {
+    "name": "long-span",
+    "rows": 2771,
+    "params": {
+      "start_date": "2024-06-11",
+      "as_of_date": "2026-11-20"
+    },
+    "headline": "截至 2026-11-20，有效工具 17 件，在管 17 件，借出 0 件。"
+  }
+]

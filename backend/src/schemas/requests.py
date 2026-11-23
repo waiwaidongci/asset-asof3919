@@ -1,6 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field
 from src.constants.enums import Review
+from src.domain.replay import BATCH_SIZE
 
 class Request(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra='forbid')
@@ -13,6 +14,14 @@ class Upload(Request):
     name: str = Field(min_length=1, max_length=120)
     filename: str = Field(min_length=1, max_length=160)
     csv_text: str = Field(min_length=1, max_length=2_000_000)
+
+class ImportBegin(Request):
+    name: str = Field(min_length=1, max_length=120)
+    filename: str = Field(min_length=1, max_length=160)
+
+class ImportChunk(Request):
+    index: int = Field(ge=0, le=1_000_000)
+    rows: list[dict] = Field(min_length=1, max_length=BATCH_SIZE)
 
 class RunRequest(Request):
     dataset_id: int = Field(gt=0)

@@ -3,7 +3,9 @@ from src.utils.time import iso
 
 def dataset(item):
     return {'id': item.id, 'name': item.name, 'filename': item.filename, 'row_count': item.row_count,
-            'checksum': item.checksum, 'author': item.author, 'created_at': iso(item.created_at)}
+            'checksum': item.checksum, 'author': item.author, 'created_at': iso(item.created_at),
+            'status': item.status, 'imported_rows': item.imported_rows, 'next_chunk': item.next_chunk,
+            'event_count': item.event_count, 'error': item.error}
 
 
 def run(item, detail=False):
